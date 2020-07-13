@@ -1,12 +1,29 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from "react";
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet, Text, View, Platform } from "react-native";
+import { GameLoop } from "react-native-game-engine";
+import { AdMobBanner } from "expo-ads-admob";
+
+import config from "./src/config";
 
 export default function App() {
+  const hasPremium = false;
+  const [bannerOkay, setBannerOkay] = useState(true);
+
+  const adUnitId = Platform.OS === "android" ? config.ADMOB_BANNER_ANDROID : config.ADMOB_BANNER_IOS;
+
   return (
     <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
       <StatusBar style="auto" />
+
+      {hasPremium ||
+        (bannerOkay && (
+          <AdMobBanner
+            adUnitID={adUnitId}
+            servePersonalizedAds
+            onDidFailToReceiveAdWithError={() => setBannerOkay(false)}
+          />
+        ))}
     </View>
   );
 }
@@ -14,8 +31,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
